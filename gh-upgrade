@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -euo pipefail
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            printf 'Usage: gh upgrade\n'
+            exit 0
+            ;;
+    esac
+
+    shift
+done
+
+url="https://github.com$(curl -Ls 'https://github.com/cli/cli/releases/latest' | grep -- '_linux_amd64\.rpm"' | cut -d '"' -f 2)"
+
+if type dnf >/dev/null 2>&1; then
+    exec sudo dnf upgrade "$url"
+fi
+
+if type zypper >/dev/null 2>&1; then
+    exec sudo zypper install "$url"
+fi
